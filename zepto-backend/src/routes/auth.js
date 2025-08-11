@@ -1,8 +1,5 @@
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const router = express.Router();
-const { User } = require('../models');
-require('dotenv').config();
+const twilio = require('twilio');
+const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 router.post('/request-otp', async (req, res) => {
   const { mobile } = req.body;
@@ -10,25 +7,15 @@ router.post('/request-otp', async (req, res) => {
 
   await User.upsert({ mobile, otp, verified: false });
 
-  console.log(`OTP for ${mobile}: ${otp}`);  // For testing, log OTP to console
-
-  res.json({ message: 'OTP sent (mocked)' });
-});
-
-router.post('/verify-otp', async (req, res) => {
-  const { mobile, otp } = req.body;
-
-  const user = await User.findOne({ where: { mobile, otp } });
-  if (!user) {
-    return res.status(401).json({ message: 'Invalid OTP' });
+  try {
+    await client.messages.create({
+      body: `Your OTP for Zepto-Manasa Rao is: ${otp}`,
+      from: process.env.TWILIO_PHONE_NUMBER,
+      to: mobile.startsWith('+') ? mobile : `+91${mobile}`
+    });
+    res.json({ message: 'OTP sent successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to send OTP' });
   }
-
-  user.verified = true;
-  await user.save();
-
-  const token = jwt.sign({ mobile }, process.env.JWT_SECRET);
-
-  res.json({ token });
 });
-
-module.exports = router;
