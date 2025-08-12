@@ -7,22 +7,26 @@ const OTPLogin = ({ onLogin }) => {
   const [step, setStep] = useState(1);
 
   const sendOtp = async () => {
-    await api.post('/auth/request-otp', { mobile });
-    setStep(2);
+    try {
+      await api.post('/auth/request-otp', { mobile });
+      setStep(2);
+      alert('OTP sent to your mobile.');
+    } catch (e) {
+      alert('Failed to send OTP.');
+    }
   };
+
   const verifyOtp = async () => {
     try {
       const res = await api.post('/auth/verify-otp', { mobile, otp });
-      console.log('API response:', res);
       if (res.data && res.data.token) {
         localStorage.setItem('token', res.data.token);
         onLogin();
+        alert('Login successful!');
       } else {
-        console.error('Unexpected response:', res.data);
         alert('Invalid response from server');
       }
-    } catch (error) {
-      console.error('Verification failed:', error.response ? error.response.data : error.message);
+    } catch {
       alert('OTP verification failed. Please try again.');
     }
   };
@@ -37,7 +41,7 @@ const OTPLogin = ({ onLogin }) => {
       ) : (
         <>
           <input placeholder="OTP" value={otp} onChange={e => setOtp(e.target.value)} />
-          <button onClick={verifyOtp}>Verify</button>
+          <button onClick={verifyOtp}>Verify OTP</button>
         </>
       )}
     </div>
