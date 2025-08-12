@@ -1,9 +1,10 @@
 const express = require('express');
 const cors = require('cors');
-const { sequelize } = require('./src/models'); // ✅ adjust path based on actual folder
+require('dotenv').config();
+
+const { sequelize } = require('./src/models');
 const authRoutes = require('./src/routes/auth');
 const productRoutes = require('./src/routes/products');
-require('dotenv').config();
 
 const app = express();
 
@@ -15,7 +16,15 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/products', productRoutes);
 
-// Database sync and server start
+// Root route with main app info
+app.get('/', (req, res) => {
+  res.json({
+    appName: "Manasa Rao - Groceries",
+    caption: "Healthy and Organic"
+  });
+});
+
+// Start server after DB connection
 sequelize.sync()
   .then(() => {
     app.listen(process.env.PORT || 3001, '0.0.0.0', () => {
