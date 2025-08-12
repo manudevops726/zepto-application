@@ -1,7 +1,7 @@
 const { Product, sequelize } = require('./src/models');
 
 async function seed() {
-  await sequelize.sync({ force: false }); // keep data safe
+  await sequelize.sync({ force: false });
 
   const products = [
     { name: 'Banana', image: 'https://images.heb.com/is/image/HEBGrocery/000377497', price: 70 },
