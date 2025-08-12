@@ -1,4 +1,8 @@
+const { User } = require('../models');  // one level up to 'src' then into 'models'
 const twilio = require('twilio');
+const express = require('express');
+const router = express.Router();
+
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 router.post('/request-otp', async (req, res) => {
@@ -19,3 +23,5 @@ router.post('/request-otp', async (req, res) => {
     res.status(500).json({ message: 'Failed to send OTP' });
   }
 });
+
+module.exports = router;
