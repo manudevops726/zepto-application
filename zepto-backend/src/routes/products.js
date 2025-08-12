@@ -1,8 +1,17 @@
 const express = require('express');
 const router = express.Router();
+const { Product } = require('../models');
+const auth = require('../middleware/auth');
 
-const { Product } = require('../models');  // adjust path if needed
-const auth = require('../middleware/auth'); // adjust path if needed
+router.get('/', async (req, res) => {
+  try {
+    const products = await Product.findAll();
+    res.json(products);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 router.post('/', auth, async (req, res) => {
   try {
