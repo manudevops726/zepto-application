@@ -8,15 +8,9 @@ const productRoutes = require('./src/routes/products');
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Routes
-app.use('/auth', authRoutes);
-app.use('/products', productRoutes);
-
-// Root route with main app info
 app.get('/', (req, res) => {
   res.json({
     appName: "Manasa Rao - Groceries",
@@ -24,13 +18,15 @@ app.get('/', (req, res) => {
   });
 });
 
-// Start server after DB connection
+app.use('/auth', authRoutes);
+app.use('/products', productRoutes);
+
 sequelize.sync()
   .then(() => {
     app.listen(process.env.PORT || 3001, '0.0.0.0', () => {
-      console.log(`✅ Server running on port ${process.env.PORT || 3001}`);
+      console.log(`Server running on port ${process.env.PORT || 3001}`);
     });
   })
   .catch(err => {
-    console.error('❌ Database connection failed:', err);
+    console.error('Database connection failed:', err);
   });
