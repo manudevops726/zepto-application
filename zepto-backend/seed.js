@@ -1,7 +1,7 @@
-const { Product, sequelize } = require('./models');
+const { Product, sequelize } = require('./src/models');
 
 async function seed() {
-  await sequelize.sync({ force: false }); // ensure tables exist, but don't drop data
+  await sequelize.sync({ force: false }); // keep data safe
 
   const products = [
     { name: 'Banana', image: 'https://images.heb.com/is/image/HEBGrocery/000377497', price: 70 },
