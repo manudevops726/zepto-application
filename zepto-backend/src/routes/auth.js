@@ -1,7 +1,8 @@
-const { User } = require('../models');  // one level up to 'src' then into 'models'
-const twilio = require('twilio');
 const express = require('express');
 const router = express.Router();
+
+const { User } = require('../models');  // Adjust path as needed
+const twilio = require('twilio');
 
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
