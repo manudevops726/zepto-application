@@ -16,7 +16,6 @@ module.exports = (req, res, next) => {
     req.user = jwt.verify(token, process.env.JWT_SECRET);
     next();
   } catch (err) {
-    console.error('JWT verification failed:', err.message);
     res.status(403).json({ error: 'Invalid or expired token' });
   }
 };
