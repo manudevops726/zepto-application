@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import OTPLogin from './components/OTPLogin';
 import ProductList from './components/ProductList';
-import AddProduct from './components/AddProduct';
+import AddProduct from './components/AddProducts';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem('token'));
