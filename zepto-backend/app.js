@@ -8,10 +8,10 @@ const productRoutes = require('./src/routes/products');
 const orderRoutes = require('./src/routes/orders');
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 
+// Health check
 app.get('/', (req, res) => {
   res.json({
     appName: "Manasa Rao - Groceries",
@@ -26,9 +26,7 @@ app.use('/orders', orderRoutes);
 sequelize.sync()
   .then(() => {
     app.listen(process.env.PORT || 3001, '0.0.0.0', () => {
-      console.log(`Server running on port ${process.env.PORT || 3001}`);
+      console.log(`✅ Server running on port ${process.env.PORT || 3001}`);
     });
   })
-  .catch(err => {
-    console.error('Database connection failed:', err);
-  });
+  .catch(err => console.error('❌ Database connection failed:', err));
