@@ -5,6 +5,7 @@ require('dotenv').config();
 const { sequelize } = require('./src/models');
 const authRoutes = require('./src/routes/auth');
 const productRoutes = require('./src/routes/products');
+const orderRoutes = require('./src/routes/orders');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.get('/', (req, res) => {
 
 app.use('/auth', authRoutes);
 app.use('/products', productRoutes);
+app.use('/orders', orderRoutes);
 
 sequelize.sync()
   .then(() => {
