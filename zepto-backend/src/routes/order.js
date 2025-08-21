@@ -1,24 +1,29 @@
 const express = require('express');
-const { Order, Product } = require('../models');
-const auth = require('../middleware/auth');
-
 const router = express.Router();
+const { Order, Product, User } = require('../models');
+const auth = require('../middleware/auth');
 
 // Place an order
 router.post('/', auth, async (req, res) => {
   try {
     const { productId, quantity } = req.body;
-    if (!productId || !quantity) return res.status(400).json({ message: "Product ID & quantity required" });
+
+    if (!productId || !quantity) {
+      return res.status(400).json({ error: 'Product ID and quantity required' });
+    }
+
+    const product = await Product.findByPk(productId);
+    if (!product) return res.status(404).json({ error: 'Product not found' });
 
     const order = await Order.create({
-      UserId: req.user.id,
-      ProductId: productId,
-      quantity
+      productId,
+      quantity,
+      userId: req.user.id,
     });
 
-    res.json(order);
+    res.json({ message: 'Order placed successfully', order });
   } catch (error) {
-    res.status(500).json({ message: "Failed to place order", error: error.message });
+    res.status(500).json({ error: 'Failed to place order', details: error.message });
   }
 });
 
@@ -26,12 +31,12 @@ router.post('/', auth, async (req, res) => {
 router.get('/', auth, async (req, res) => {
   try {
     const orders = await Order.findAll({
-      where: { UserId: req.user.id },
-      include: Product
+      where: { userId: req.user.id },
+      include: [Product],
     });
     res.json(orders);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch orders", error: error.message });
+    res.status(500).json({ error: 'Failed to fetch orders', details: error.message });
   }
 });
 
