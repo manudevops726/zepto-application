@@ -12,11 +12,13 @@ const sequelize = new Sequelize(
   }
 );
 
+// User Model
 const User = sequelize.define('User', {
   email: { type: DataTypes.STRING, allowNull: false, unique: true },
   password: { type: DataTypes.STRING, allowNull: false },
 });
 
+// Product Model
 const Product = sequelize.define('Product', {
   name: DataTypes.STRING,
   image: DataTypes.STRING,
@@ -24,17 +26,15 @@ const Product = sequelize.define('Product', {
   addedBy: DataTypes.STRING,
 });
 
+// Order Model
 const Order = sequelize.define('Order', {
-  userEmail: { type: DataTypes.STRING, allowNull: false },
-  productId: { type: DataTypes.INTEGER, allowNull: false },
-  quantity: { type: DataTypes.INTEGER, defaultValue: 1 },
+  quantity: { type: DataTypes.INTEGER, allowNull: false },
 });
 
-// Relations
-User.hasMany(Order, { foreignKey: 'userEmail', sourceKey: 'email' });
-Order.belongsTo(User, { foreignKey: 'userEmail', targetKey: 'email' });
-
-Product.hasMany(Order, { foreignKey: 'productId' });
+// Associations
+Order.belongsTo(User, { foreignKey: 'userId' });
 Order.belongsTo(Product, { foreignKey: 'productId' });
+User.hasMany(Order, { foreignKey: 'userId' });
+Product.hasMany(Order, { foreignKey: 'productId' });
 
 module.exports = { sequelize, User, Product, Order };
