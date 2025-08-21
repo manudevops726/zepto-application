@@ -12,12 +12,13 @@ const sequelize = new Sequelize(
   }
 );
 
+// User Model
 const User = sequelize.define('User', {
-  mobile: { type: DataTypes.STRING, allowNull: false, unique: true },
-  otp: DataTypes.STRING,
-  verified: { type: DataTypes.BOOLEAN, defaultValue: false }
+  email: { type: DataTypes.STRING, allowNull: false, unique: true },
+  password: { type: DataTypes.STRING, allowNull: false }
 });
 
+// Product Model
 const Product = sequelize.define('Product', {
   name: DataTypes.STRING,
   image: DataTypes.STRING,
@@ -25,4 +26,16 @@ const Product = sequelize.define('Product', {
   addedBy: DataTypes.STRING
 });
 
-module.exports = { sequelize, User, Product };
+// Order Model
+const Order = sequelize.define('Order', {
+  quantity: { type: DataTypes.INTEGER, defaultValue: 1 }
+});
+
+// Associations
+User.hasMany(Order);
+Order.belongsTo(User);
+
+Product.hasMany(Order);
+Order.belongsTo(Product);
+
+module.exports = { sequelize, User, Product, Order };
