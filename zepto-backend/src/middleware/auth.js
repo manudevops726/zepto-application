@@ -1,21 +1,16 @@
+// src/middleware/auth.js
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-module.exports = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    return res.status(403).json({ error: 'Authorization header missing' });
-  }
-
-  const token = authHeader.split(' ')[1];
-  if (!token || token === 'null') {
-    return res.status(403).json({ error: 'Token missing or invalid' });
-  }
+module.exports = function (req, res, next) {
+  const token = req.header('Authorization')?.replace('Bearer ', '');
+  if (!token) return res.status(401).json({ message: 'Access denied. No token provided.' });
 
   try {
-    req.user = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
     next();
-  } catch (err) {
-    res.status(403).json({ error: 'Invalid or expired token' });
+  } catch (ex) {
+    res.status(400).json({ message: 'Invalid token' });
   }
 };
