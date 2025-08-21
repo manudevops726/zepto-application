@@ -15,7 +15,7 @@ async function seed() {
     await Product.findOrCreate({ where: { name: product.name }, defaults: product });
   }
 
-  console.log('Seeding done!');
+  console.log("✅ Seeding done!");
   process.exit();
 }
 
